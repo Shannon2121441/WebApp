@@ -3,23 +3,23 @@ class Supplier{
 	private $DB_SERVER='localhost';
 	private $DB_USERNAME='root';
 	private $DB_PASSWORD='';
-	private $DB_DATABASE='db_inv';
+	private $DB_DATABASE='db_wbapp';
 	private $conn;
 	public function __construct(){
 		$this->conn = new PDO("mysql:host=".$this->DB_SERVER.";dbname=".$this->DB_DATABASE,$this->DB_USERNAME,$this->DB_PASSWORD);
 		
 	}
 	
-	public function new_supplier($supplier_name,$supplier_email,$contact_no,$supplier_address){
+	public function new_supplier($supplier_name,$supplier_email,$supplier_contactno){
 		
 		/* Setting Timezone for DB */
 		$NOW = new DateTime('now', new DateTimeZone('Asia/Manila'));
 		$NOW = $NOW->format('Y-m-d H:i:s');
 
 		$data = [
-			[$supplier_name,$supplier_email,$contact_no,$supplier_address,$NOW,$NOW, '1'],
+			[$supplier_name,$supplier_email,$NOW,$NOW,$supplier_contactno],
 		];
-		$stmt = $this->conn->prepare("INSERT INTO tbl_supplier (supplier_name, supplier_email, contact_no, supplier_address, date_added, time_added, supplier_status) VALUES (?,?,?,?,?,?,?)");
+		$stmt = $this->conn->prepare("INSERT INTO tbl_suppliers (supplier_name,supplier_email, supplier_date_added, supplier_time_added, supplier_contactno) VALUES (?,?,?,?,?)");
 		try {
 			$this->conn->beginTransaction();
 			foreach ($data as $row)
@@ -36,21 +36,64 @@ class Supplier{
 
 	}
 
-	public function update_supplier($id, $supplier_name, $supplier_email, $contact_no, $supplier_address){
+	public function update_supplier($supplier_name, $id, $supplier_contactno){
 		
 		/* Setting Timezone for DB */
 		$NOW = new DateTime('now', new DateTimeZone('Asia/Manila'));
 		$NOW = $NOW->format('Y-m-d H:i:s');
 
-		$sql = "UPDATE tbl_supplier SET supplier_name=:supplier_name,supplier_email=:supplier_email,contact_no=:contact_no,supplier_address=:supplier_address,date_updated=:date_updated,time_updated=:time_updated WHERE supplier_id=:supplier_id";
+		$sql = "UPDATE tbl_suppliers SET supplier_name=:supplier_name,supplier_date_updated=:supplier_date_updated,supplier_time_updated=:supplier_time_updated,supplier_contactno=:supplier_contactno WHERE supplier_id=:supplier_id";
 
 		$q = $this->conn->prepare($sql);
-		$q->execute(array(':supplier_name'=>$supplier_name,':supplier_email'=>$supplier_email,':contact_no'=>$contact_no,':supplier_address'=>$supplier_address,':date_updated'=>$NOW,':time_updated'=>$NOW,':supplier_id'=>$id));
+		$q->execute(array(':supplier_name'=>$supplier_name,':supplier_date_updated'=>$NOW,':supplier_time_updated'=>$NOW,':supplier_id'=>$id,':supplier_contactno'=>$supplier_contactno));
+		return true;
+	}
+	public function list_supplier_search($keyword){
+		
+		//$keyword = "%".$keyword."%";
+
+		$q = $this->conn->prepare('SELECT * FROM `tbl_suppliers` WHERE `supplier_name` LIKE ?');
+		$q->bindValue(1, "%$keyword%", PDO::PARAM_STR);
+		$q->execute();
+
+		while($r = $q->fetch(PDO::FETCH_ASSOC)){
+		$data[]= $r;
+		}
+		if(empty($data)){
+		   return false;
+		}else{
+			return $data;	
+		}
+	}
+
+	public function change_supplier_email($id,$supplier_email){
+		
+		/* Setting Timezone for DB */
+		$NOW = new DateTime('now', new DateTimeZone('Asia/Manila'));
+		$NOW = $NOW->format('Y-m-d H:i:s');
+
+		$sql = "UPDATE tbl_suppliers SET supplier_email=:supplier_email,supplier_date_updated=:supplier_date_updated,supplier_time_updated=:supplier_time_updated WHERE supplier_id=:supplier_id";
+
+		$q = $this->conn->prepare($sql);
+		$q->execute(array(':supplier_email'=>$email,':supplier_date_updated'=>$NOW,':supplier_time_updated'=>$NOW,':supplier_id'=>$id));
+		return true;
+	}
+
+	public function change_supplier_contactno($id,$supplier_contactno){
+		
+		/* Setting Timezone for DB */
+		$NOW = new DateTime('now', new DateTimeZone('Asia/Manila'));
+		$NOW = $NOW->format('Y-m-d H:i:s');
+
+		$sql = "UPDATE tbl_suppliers SET supplier_contactno=:supplier_contactno,supplier_date_updated=:supplier_date_updated,supplier_time_updated=:supplier_time_updated WHERE supplier_id=:supplier_id";
+
+		$q = $this->conn->prepare($sql);
+		$q->execute(array(':supplier_contactno'=>$supplier_contactno,':supplier_date_updated'=>$NOW,':supplier_time_updated'=>$NOW,':supplier_id'=>$id));
 		return true;
 	}
 	
-	public function list_suppliers(){
-		$sql="SELECT * FROM tbl_supplier";
+	public function list_supplier(){
+		$sql="SELECT * FROM tbl_suppliers";
 		$q = $this->conn->query($sql) or die("failed!");
 		while($r = $q->fetch(PDO::FETCH_ASSOC)){
 		  $data[]=$r;
@@ -60,61 +103,34 @@ class Supplier{
 		}else{
 			return $data;	
 		}
-	}
-
-	public function change_supplier_status($id,$supplier_status){
-		
-		/* Setting Timezone for DB */
-		$NOW = new DateTime('now', new DateTimeZone('Asia/Manila'));
-		$NOW = $NOW->format('Y-m-d H:i:s');
-
-		$sql = "UPDATE tbl_supplier SET supplier_status=:supplier_status,date_updated=:date_updated,time_updated=:time_updated WHERE supplier_id=:supplier_id";
-
-		$q = $this->conn->prepare($sql);
-		$q->execute(array(':supplier_status'=>$supplier_status,':date_updated'=>$NOW,':time_updated'=>$NOW,':supplier_id'=>$id));
-		return true;
-	}
+}
 
 	function get_supplier_id($supplier_email){
-		$sql="SELECT supplier_id FROM tbl_supplier WHERE supplier_email = :supplier_email";	
+		$sql="SELECT supplier_id FROM tbl_suppliers WHERE supplier_email = :email";	
 		$q = $this->conn->prepare($sql);
-		$q->execute(['supplier_email' => $supplier_email]);
+		$q->execute(['email' => $email]);
 		$supplier_id = $q->fetchColumn();
 		return $supplier_id;
 	}
 	function get_supplier_email($id){
-		$sql="SELECT supplier_email FROM tbl_supplier WHERE supplier_id = :id";	
+		$sql="SELECT supplier_email FROM tbl_suppliers WHERE supplier_id = :id";	
 		$q = $this->conn->prepare($sql);
 		$q->execute(['id' => $id]);
 		$supplier_email = $q->fetchColumn();
 		return $supplier_email;
 	}
+	function get_supplier_contactno($id){
+		$sql="SELECT supplier_contactno FROM tbl_suppliers WHERE supplier_id = :id";	
+		$q = $this->conn->prepare($sql);
+		$q->execute(['id' => $id]);
+		$supplier_contactno = $q->fetchColumn();
+		return $supplier_contactno;
+	}
 	function get_supplier_name($id){
-		$sql="SELECT supplier_name FROM tbl_supplier WHERE supplier_id = :id";	
+		$sql="SELECT supplier_name FROM tbl_suppliers WHERE supplier_id = :id";	
 		$q = $this->conn->prepare($sql);
 		$q->execute(['id' => $id]);
 		$supplier_name = $q->fetchColumn();
 		return $supplier_name;
-	}
-	function get_supplier_address($id){
-		$sql="SELECT supplier_address FROM tbl_supplier WHERE supplier_id = :id";	
-		$q = $this->conn->prepare($sql);
-		$q->execute(['id' => $id]);
-		$supplier_address = $q->fetchColumn();
-		return $supplier_address;
-	}
-	function get_supplier_contact_no($id){
-		$sql="SELECT contact_no FROM tbl_supplier WHERE supplier_id = :id";	
-		$q = $this->conn->prepare($sql);
-		$q->execute(['id' => $id]);
-		$contact_no = $q->fetchColumn();
-		return $contact_no;
-	}
-	function get_supplier_status($id){
-		$sql="SELECT supplier_status FROM tbl_supplier WHERE supplier_id = :id";	
-		$q = $this->conn->prepare($sql);
-		$q->execute(['id' => $id]);
-		$supplier_status = $q->fetchColumn();
-		return $supplier_status;
 	}
 }
