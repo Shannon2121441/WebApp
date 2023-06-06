@@ -1,240 +1,258 @@
-CREATE DATABASE IF NOT EXISTS `db_inv`;
-USE `db_inv`;
+CREATE DATABASE IF NOT EXISTS `db_wbapp` /*!40100 DEFAULT CHARACTER SET utf8mb4 */;
+USE `db_wbapp`;
 
-CREATE TABLE IF NOT EXISTS `tbl_customer` (
-  `customer_id` int(11) NOT NULL AUTO_INCREMENT,
-  PRIMARY KEY (`customer_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
-CREATE TABLE IF NOT EXISTS `tbl_order` (
-  `order_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `supplier_id` int(10) unsigned DEFAULT 0,
-  `order_amount` int(10) unsigned NOT NULL DEFAULT 0,
-  `order_saved` int(1) NOT NULL DEFAULT 0,
-  `order_status` int(1) NOT NULL DEFAULT 0,
-  `date_added` date NOT NULL,
-  `time_added` time NOT NULL,
-  `date_updated` date NOT NULL,
-  `time_updated` time NOT NULL,
-  `user_id` int(10) unsigned NOT NULL,
-  PRIMARY KEY (`order_id`),
-  KEY `FK_tbl_order_tbl_supplier` (`supplier_id`),
-  CONSTRAINT `FK_tbl_order_tbl_supplier` FOREIGN KEY (`supplier_id`) REFERENCES `tbl_supplier` (`supplier_id`) ON DELETE SET NULL ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4;
-
-INSERT INTO `tbl_order` (`order_id`, `supplier_id`, `order_amount`, `order_saved`, `order_status`, `date_added`, `time_added`, `date_updated`, `time_updated`) VALUES
-	(6, 7, 200, 1, 0, '2023-03-15', '02:05:00', '0000-00-00', '00:00:00'),
-	(7, 7, 2000, 1, 0, '2023-03-15', '02:22:39', '0000-00-00', '00:00:00'),
-	(8, 4, 100, 1, 0, '2023-03-15', '02:26:13', '0000-00-00', '00:00:00'),
-	(9, 5, 232, 1, 0, '2023-03-15', '04:31:31', '0000-00-00', '00:00:00'),
-	(10, 9, 200, 1, 0, '2023-03-15', '10:47:30', '0000-00-00', '00:00:00'),
-	(11, 5, 12, 1, 0, '2023-04-01', '02:39:15', '0000-00-00', '00:00:00'),
-	(12, 8, 12, 0, 0, '2023-04-01', '02:40:17', '0000-00-00', '00:00:00');
-
-CREATE TABLE IF NOT EXISTS `tbl_orderitem` (
-  `order_id` int(11) unsigned NOT NULL,
-  `prod_id` int(11) unsigned NOT NULL,
-  `order_qty` int(6) NOT NULL DEFAULT 0,
-  KEY `order_prod_id` (`prod_id`) USING BTREE,
-  KEY `FK_tbl_orderitem_tbl_order` (`order_id`),
-  CONSTRAINT `FK_tbl_orderitem_tbl_order` FOREIGN KEY (`order_id`) REFERENCES `tbl_order` (`order_id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `FK_tbl_orderitem_tbl_products` FOREIGN KEY (`prod_id`) REFERENCES `tbl_products` (`prod_id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
-INSERT INTO `tbl_orderitem` (`order_id`, `prod_id`, `order_qty`) VALUES
-	(6, 20, 200),
-	(6, 19, 400),
-	(6, 21, 200),
-	(7, 20, 3000),
-	(8, 19, 10),
-	(9, 21, 121),
-	(9, 20, 212),
-	(9, 21, 0),
-	(9, 19, 123123),
-	(10, 22, 20),
-	(11, 19, 12);
-
-CREATE TABLE IF NOT EXISTS `tbl_products` (
-  `prod_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `prod_name` varchar(50) NOT NULL DEFAULT '0',
-  `type_id` int(10) unsigned DEFAULT 0,
-  `supplier_id` int(10) unsigned DEFAULT 0,
-  `beg_inv` int(10) unsigned NOT NULL DEFAULT 0,
-  `prod_price` int(10) unsigned NOT NULL DEFAULT 0,
-  `date_added` date NOT NULL,
-  `date_updated` date NOT NULL,
-  `time_added` time NOT NULL,
-  `time_updated` time NOT NULL,
+-- Dumping structure for table db_wbapp.tbl_product
+CREATE TABLE IF NOT EXISTS `tbl_product` (
+  `prod_id` int(8) unsigned NOT NULL AUTO_INCREMENT,
+  `prod_name` varchar(180) NOT NULL DEFAULT '',
+  `prod_description` varchar(180) NOT NULL DEFAULT '',
+  `prod_image` varchar(180) NOT NULL DEFAULT '',
+  `prod_price` int(11) NOT NULL DEFAULT 0,
+  `prod_date_added` date DEFAULT NULL,
+  `prod_time_added` time DEFAULT NULL,
+  `prod_date_updated` date DEFAULT NULL,
+  `prod_time_updated` time DEFAULT NULL,
+  `prod_status` int(1) NOT NULL DEFAULT 0,
+  `type_id` int(3) NOT NULL DEFAULT 0,
   PRIMARY KEY (`prod_id`),
-  KEY `FK_tbl_products_tbl_supplier` (`supplier_id`),
-  KEY `type_id` (`type_id`),
-  CONSTRAINT `FK_tbl_products_tbl_supplier` FOREIGN KEY (`supplier_id`) REFERENCES `tbl_supplier` (`supplier_id`) ON DELETE SET NULL ON UPDATE CASCADE,
-  CONSTRAINT `type_id` FOREIGN KEY (`type_id`) REFERENCES `tbl_type` (`type_id`) ON DELETE SET NULL ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8mb4;
+  KEY `type_id` (`type_id`)
+) ENGINE=MyISAM AUTO_INCREMENT=10000006 DEFAULT CHARSET=utf8mb4;
 
-INSERT INTO `tbl_products` (`prod_id`, `prod_name`, `type_id`, `supplier_id`, `beg_inv`, `prod_price`, `date_added`, `date_updated`, `time_added`, `time_updated`) VALUES
-	(19, 'Vitamilk', 9, 8, 200, 100, '2023-03-15', '0000-00-00', '02:02:07', '00:00:00'),
-	(20, 'Wassup Babygirl', 4, 7, 10, 20, '2023-03-15', '0000-00-00', '02:02:38', '00:00:00'),
-	(21, 'Jin Ramen 120g', 1, 8, 300, 100, '2023-03-15', '0000-00-00', '02:03:18', '00:00:00'),
-	(22, 'Tofu', 10, 5, 20, 100, '2023-03-15', '0000-00-00', '10:46:38', '00:00:00');
+-- Dumping data for table db_wbapp.tbl_product: 4 rows
+/*!40000 ALTER TABLE `tbl_product` DISABLE KEYS */;
+INSERT INTO `tbl_product` (`prod_id`, `prod_name`, `prod_description`, `prod_image`, `prod_price`, `prod_date_added`, `prod_time_added`, `prod_date_updated`, `prod_time_updated`, `prod_status`, `type_id`) VALUES
+	(10000002, 'Nissin Ramen Chicken', 'Chicken Flavor', '10000002_647cf851d42f2.png', 15, '2023-06-05', '04:47:08', '2023-06-05', '07:43:54', 1, 301),
+	(10000003, 'Nissin Ramen Seafood', 'Seafood Flavor', '10000003_647cf86ea6013.png', 15, '2023-06-05', '04:47:37', '2023-06-05', '07:44:03', 1, 301),
+	(10000004, 'Nestle Milk', 'Fresh Milk', '10000004_647d4380ec946.jpg', 100, '2023-06-05', '10:07:44', '2023-06-05', '10:08:02', 1, 307),
+	(10000005, '', '', 'default.png', 0, '2023-06-05', '11:01:17', '2023-06-05', '11:01:49', 1, 301);
+/*!40000 ALTER TABLE `tbl_product` ENABLE KEYS */;
 
+-- Dumping structure for table db_wbapp.tbl_product_inv
 CREATE TABLE IF NOT EXISTS `tbl_product_inv` (
-  `order_id` int(10) unsigned NOT NULL,
-  `prod_id` int(10) unsigned NOT NULL,
-  `prod_qty` int(11) NOT NULL,
-  KEY `order_id` (`order_id`),
+  `rec_id` int(8) NOT NULL DEFAULT 0,
+  `prod_id` int(8) NOT NULL DEFAULT 0,
+  `prod_qty` int(8) NOT NULL DEFAULT 0,
+  KEY `prod_id` (`prod_id`),
+  KEY `rec_id` (`rec_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
+
+-- Dumping data for table db_wbapp.tbl_product_inv: 8 rows
+/*!40000 ALTER TABLE `tbl_product_inv` DISABLE KEYS */;
+INSERT INTO `tbl_product_inv` (`rec_id`, `prod_id`, `prod_qty`) VALUES
+	(10000001, 10000001, 400),
+	(10000003, 10000001, 200),
+	(10000004, 10000001, 100),
+	(10000005, 10000002, 200),
+	(10000005, 10000002, 0),
+	(10000006, 10000003, 100),
+	(10000006, 10000002, 50),
+	(10000007, 10000002, 200);
+/*!40000 ALTER TABLE `tbl_product_inv` ENABLE KEYS */;
+
+-- Dumping structure for table db_wbapp.tbl_product_pricing
+CREATE TABLE IF NOT EXISTS `tbl_product_pricing` (
+  `prod_id` int(8) NOT NULL DEFAULT 0,
+  `prod_retail_price` decimal(10,2) NOT NULL DEFAULT 0.00,
   KEY `prod_id` (`prod_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
 
-INSERT INTO `tbl_product_inv` (`order_id`, `prod_id`, `prod_qty`) VALUES
-	(6, 20, 200),
-	(6, 19, 400),
-	(6, 21, 200),
-	(7, 20, 3000),
-	(8, 19, 10),
-	(9, 21, 121),
-	(9, 20, 212),
-	(9, 21, 0),
-	(9, 19, 123123),
-	(10, 22, 20),
-	(11, 19, 12);
-    
-CREATE TABLE IF NOT EXISTS `tbl_purchase` (
-  `purchase_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `customer_id` int(10) unsigned NOT NULL DEFAULT 0,
-  `purch_amount` int(10) unsigned NOT NULL,
-  `purch_saved` int(1) NOT NULL DEFAULT 0,
-  `purch_status` int(1) NOT NULL DEFAULT 0,
-  `date_added` date NOT NULL,
-  `time_added` time NOT NULL,
-  `date_updated` date NOT NULL,
-  `time_updated` time NOT NULL,
-  `user_id` int(10) unsigned NOT NULL,
-  PRIMARY KEY (`purchase_id`) USING BTREE,
-  KEY `customer_id` (`customer_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8mb4;
+-- Dumping data for table db_wbapp.tbl_product_pricing: 0 rows
+/*!40000 ALTER TABLE `tbl_product_pricing` DISABLE KEYS */;
+/*!40000 ALTER TABLE `tbl_product_pricing` ENABLE KEYS */;
 
-INSERT INTO `tbl_purchase` (`purchase_id`, `customer_id`, `purch_amount`, `purch_saved`, `purch_status`, `date_added`, `time_added`, `date_updated`, `time_updated`) VALUES
-	(11, 0, 100, 1, 1, '2023-03-15', '04:13:56', '0000-00-00', '00:00:00'),
-	(12, 2, 21211, 1, 1, '2023-03-15', '04:16:16', '0000-00-00', '00:00:00'),
-	(13, 0, 122, 1, 1, '2023-03-15', '04:23:52', '0000-00-00', '00:00:00'),
-	(14, 0, 122, 1, 1, '2023-03-15', '04:24:45', '0000-00-00', '00:00:00'),
-	(15, 0, 12, 1, 1, '2023-03-15', '04:26:11', '0000-00-00', '00:00:00'),
-	(16, 3, 44555, 1, 1, '2023-03-15', '04:33:18', '0000-00-00', '00:00:00'),
-	(17, 0, 12, 1, 1, '2023-03-15', '04:36:49', '0000-00-00', '00:00:00'),
-	(18, 22, 19, 1, 1, '2023-03-15', '10:48:01', '0000-00-00', '00:00:00');
+-- Dumping structure for table db_wbapp.tbl_product_qty
+CREATE TABLE IF NOT EXISTS `tbl_product_qty` (
+  `prodqty_id` int(8) unsigned NOT NULL AUTO_INCREMENT,
+  `prodqty_date_added` date NOT NULL DEFAULT '0000-00-00',
+  `prodqty_time_added` time NOT NULL DEFAULT '00:00:00',
+  `prodqty_date_updated` date NOT NULL DEFAULT '0000-00-00',
+  `prodqty_time_updated` time NOT NULL DEFAULT '00:00:00',
+  `prodqty_quantity` int(10) NOT NULL DEFAULT 0,
+  `prod_id` int(8) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`prodqty_id`),
+  KEY `prod_id` (`prod_id`)
+) ENGINE=MyISAM AUTO_INCREMENT=10000001 DEFAULT CHARSET=utf8mb4;
 
-CREATE TABLE IF NOT EXISTS `tbl_purchaseitem` (
-  `purchase_id` int(10) unsigned NOT NULL,
-  `prod_id` int(10) unsigned NOT NULL,
-  `purch_qty` int(6) unsigned NOT NULL DEFAULT 0,
-  KEY `purchase_id` (`purchase_id`),
-  KEY `purchase_prod_id` (`prod_id`),
-  CONSTRAINT `purchase_id` FOREIGN KEY (`purchase_id`) REFERENCES `tbl_purchase` (`purchase_id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `purchase_prod_id` FOREIGN KEY (`prod_id`) REFERENCES `tbl_products` (`prod_id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+-- Dumping data for table db_wbapp.tbl_product_qty: 0 rows
+/*!40000 ALTER TABLE `tbl_product_qty` DISABLE KEYS */;
+/*!40000 ALTER TABLE `tbl_product_qty` ENABLE KEYS */;
 
-INSERT INTO `tbl_purchaseitem` (`purchase_id`, `prod_id`, `purch_qty`) VALUES
-	(12, 19, 21),
-	(14, 20, 34),
-	(14, 21, 213),
-	(15, 20, 420),
-	(15, 21, 6969),
-	(16, 20, 21),
-	(16, 19, 45),
-	(17, 21, 12),
-	(11, 19, 12),
-	(11, 19, 12),
-	(13, 19, 34),
-	(13, 19, 12);
+-- Dumping structure for table db_wbapp.tbl_receive
+CREATE TABLE IF NOT EXISTS `tbl_receive` (
+  `rec_id` int(8) unsigned NOT NULL AUTO_INCREMENT,
+  `supplier_id` int(10) unsigned NOT NULL DEFAULT 0,
+  `rec_date_added` date DEFAULT NULL,
+  `rec_time_added` time DEFAULT NULL,
+  `rec_saved` int(1) NOT NULL DEFAULT 0,
+  `rec_status` int(1) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`rec_id`),
+  KEY `FK_tbl_receive_tbl_suppliers` (`supplier_id`)
+) ENGINE=MyISAM AUTO_INCREMENT=10000008 DEFAULT CHARSET=utf8mb4;
 
-CREATE TABLE IF NOT EXISTS `tbl_purchase_inv` (
-  `purchase_id` int(10) unsigned NOT NULL,
-  `prod_id` int(10) unsigned NOT NULL,
-  `prod_qty` int(10) unsigned NOT NULL,
-  KEY `FK_tbl_purchase_inv_tbl_purchase` (`purchase_id`),
-  KEY `FK_tbl_purchase_inv_tbl_products` (`prod_id`),
-  CONSTRAINT `FK_tbl_purchase_inv_tbl_products` FOREIGN KEY (`prod_id`) REFERENCES `tbl_products` (`prod_id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `FK_tbl_purchase_inv_tbl_purchase` FOREIGN KEY (`purchase_id`) REFERENCES `tbl_purchase` (`purchase_id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+-- Dumping data for table db_wbapp.tbl_receive: 3 rows
+/*!40000 ALTER TABLE `tbl_receive` DISABLE KEYS */;
+INSERT INTO `tbl_receive` (`rec_id`, `supplier_id`, `rec_date_added`, `rec_time_added`, `rec_saved`, `rec_status`) VALUES
+	(10000007, 3, '2023-06-06', '21:28:44', 1, 1),
+	(10000006, 4, '2023-06-05', '07:44:17', 1, 1),
+	(10000005, 5, '2023-06-05', '07:43:15', 1, 1);
+/*!40000 ALTER TABLE `tbl_receive` ENABLE KEYS */;
 
-INSERT INTO `tbl_purchase_inv` (`purchase_id`, `prod_id`, `prod_qty`) VALUES
-	(12, 19, 21),
-	(14, 20, 34),
-	(14, 21, 213),
-	(15, 20, 420),
-	(15, 21, 6969),
-	(16, 20, 21),
-	(16, 19, 45),
-	(17, 21, 12),
-	(11, 19, 12),
-	(11, 19, 12),
-	(13, 19, 34),
-	(13, 19, 12);
+-- Dumping structure for table db_wbapp.tbl_receive_items
+CREATE TABLE IF NOT EXISTS `tbl_receive_items` (
+  `rec_id` int(8) NOT NULL DEFAULT 0,
+  `prod_id` int(8) NOT NULL DEFAULT 0,
+  `rec_qty` int(8) NOT NULL DEFAULT 0,
+  KEY `rec_id` (`rec_id`),
+  KEY `prod_id` (`prod_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
 
-CREATE TABLE IF NOT EXISTS `tbl_supplier` (
-  `supplier_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `supplier_name` varchar(50) NOT NULL DEFAULT '0',
-  `supplier_address` varchar(255) NOT NULL DEFAULT '0',
-  `contact_no` varchar(50) NOT NULL DEFAULT '0',
-  `supplier_email` varchar(50) NOT NULL DEFAULT '0',
-  `date_added` date NOT NULL,
-  `date_updated` date NOT NULL,
-  `time_added` time NOT NULL,
-  `time_updated` time NOT NULL,
-  `supplier_status` int(1) NOT NULL DEFAULT 0,
+-- Dumping data for table db_wbapp.tbl_receive_items: 8 rows
+/*!40000 ALTER TABLE `tbl_receive_items` DISABLE KEYS */;
+INSERT INTO `tbl_receive_items` (`rec_id`, `prod_id`, `rec_qty`) VALUES
+	(10000001, 10000001, 400),
+	(10000003, 10000001, 200),
+	(10000004, 10000001, 100),
+	(10000005, 10000002, 200),
+	(10000005, 10000002, 0),
+	(10000006, 10000003, 100),
+	(10000006, 10000002, 50),
+	(10000007, 10000002, 200);
+/*!40000 ALTER TABLE `tbl_receive_items` ENABLE KEYS */;
+
+-- Dumping structure for table db_wbapp.tbl_release
+CREATE TABLE IF NOT EXISTS `tbl_release` (
+  `rel_id` int(8) unsigned NOT NULL AUTO_INCREMENT,
+  `rel_customer` varchar(180) NOT NULL DEFAULT '',
+  `rel_date_added` date DEFAULT NULL,
+  `rel_time_added` time DEFAULT NULL,
+  `rel_saved` int(1) NOT NULL DEFAULT 0,
+  `rel_status` int(1) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`rel_id`)
+) ENGINE=MyISAM AUTO_INCREMENT=10000007 DEFAULT CHARSET=utf8mb4;
+
+-- Dumping data for table db_wbapp.tbl_release: 4 rows
+/*!40000 ALTER TABLE `tbl_release` DISABLE KEYS */;
+INSERT INTO `tbl_release` (`rel_id`, `rel_customer`, `rel_date_added`, `rel_time_added`, `rel_saved`, `rel_status`) VALUES
+	(10000003, '121', '2023-06-05', '07:45:53', 1, 1),
+	(10000004, '121', '2023-06-05', '07:46:13', 1, 1),
+	(10000005, '111', '2023-06-05', '10:05:53', 1, 1),
+	(10000006, 'Shan', '2023-06-06', '21:29:10', 1, 1);
+/*!40000 ALTER TABLE `tbl_release` ENABLE KEYS */;
+
+-- Dumping structure for table db_wbapp.tbl_release_inv
+CREATE TABLE IF NOT EXISTS `tbl_release_inv` (
+  `rel_id` int(8) NOT NULL DEFAULT 0,
+  `prod_id` int(8) NOT NULL DEFAULT 0,
+  `prod_qty` int(8) NOT NULL DEFAULT 0,
+  KEY `prod_id` (`prod_id`),
+  KEY `rel_id` (`rel_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
+
+-- Dumping data for table db_wbapp.tbl_release_inv: 6 rows
+/*!40000 ALTER TABLE `tbl_release_inv` DISABLE KEYS */;
+INSERT INTO `tbl_release_inv` (`rel_id`, `prod_id`, `prod_qty`) VALUES
+	(10000001, 10000001, 200),
+	(10000004, 10000002, 100),
+	(10000004, 10000003, 50),
+	(10000003, 10000002, 10),
+	(10000005, 10000002, 100),
+	(10000006, 10000002, 30);
+/*!40000 ALTER TABLE `tbl_release_inv` ENABLE KEYS */;
+
+-- Dumping structure for table db_wbapp.tbl_release_items
+CREATE TABLE IF NOT EXISTS `tbl_release_items` (
+  `rel_id` int(8) NOT NULL DEFAULT 0,
+  `prod_id` int(8) NOT NULL DEFAULT 0,
+  `rel_qty` int(8) NOT NULL DEFAULT 0,
+  KEY `rel_id` (`rel_id`),
+  KEY `prod_id` (`prod_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
+
+-- Dumping data for table db_wbapp.tbl_release_items: 6 rows
+/*!40000 ALTER TABLE `tbl_release_items` DISABLE KEYS */;
+INSERT INTO `tbl_release_items` (`rel_id`, `prod_id`, `rel_qty`) VALUES
+	(10000001, 10000001, 200),
+	(10000004, 10000002, 100),
+	(10000004, 10000003, 50),
+	(10000003, 10000002, 10),
+	(10000005, 10000002, 100),
+	(10000006, 10000002, 30);
+/*!40000 ALTER TABLE `tbl_release_items` ENABLE KEYS */;
+
+-- Dumping structure for table db_wbapp.tbl_suppliers
+CREATE TABLE IF NOT EXISTS `tbl_suppliers` (
+  `supplier_id` int(8) unsigned NOT NULL AUTO_INCREMENT,
+  `supplier_name` varchar(180) DEFAULT NULL,
+  `supplier_email` varchar(180) NOT NULL DEFAULT '0',
+  `supplier_date_added` date DEFAULT NULL,
+  `supplier_time_added` date DEFAULT NULL,
+  `supplier_date_updated` date DEFAULT NULL,
+  `supplier_time_updated` date DEFAULT NULL,
+  `supplier_contactno` varchar(180) DEFAULT NULL,
   PRIMARY KEY (`supplier_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4;
 
-INSERT INTO `tbl_supplier` (`supplier_id`, `supplier_name`, `supplier_address`, `contact_no`, `supplier_email`, `date_added`, `date_updated`, `time_added`, `time_updated`, `supplier_status`) VALUES
-	(4, 'Coca-Cola', 'St. John St. Anthony, Dona Juliana Subd., Brgy. Taculing', '095632228521', 'cola@gmail.com', '2023-03-13', '0000-00-00', '00:27:14', '00:00:00', 1),
-	(5, 'Nissin', 'Bacolod City', '09563229562', 'nissin@gmail.com', '2023-03-13', '0000-00-00', '23:23:51', '00:00:00', 1),
-	(7, 'Kazuha', 'Inazuma, Teyvat', '09123456789', 'kazuzu@gmail.com', '2023-03-14', '0000-00-00', '14:03:10', '00:00:00', 1),
-	(8, 'Ayoko Na Talaga', 'Earth', '092345678901', 'sheesh@gmail.com', '2023-03-15', '0000-00-00', '01:59:54', '00:00:00', 1),
-	(9, 'Hoyoverse', 'China', '09333333333', 'hoyo@gmail.com', '2023-03-15', '0000-00-00', '10:47:18', '00:00:00', 1);
+-- Dumping data for table db_wbapp.tbl_suppliers: ~3 rows (approximately)
+INSERT INTO `tbl_suppliers` (`supplier_id`, `supplier_name`, `supplier_email`, `supplier_date_added`, `supplier_time_added`, `supplier_date_updated`, `supplier_time_updated`, `supplier_contactno`) VALUES
+	(3, 'Joy', 'joy@gmail.com', '2023-06-05', '2023-06-05', NULL, NULL, '09787879909'),
+	(4, 'Nissin', 'nissin@gmail.com', '2023-06-05', '2023-06-05', NULL, NULL, '09567778989'),
+	(5, 'LuckyMe', 'luckyme@gmail.com', '2023-06-05', '2023-06-05', NULL, NULL, '09142323332');
 
+-- Dumping structure for table db_wbapp.tbl_type
 CREATE TABLE IF NOT EXISTS `tbl_type` (
-  `type_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `type_name` varchar(50) NOT NULL DEFAULT '0',
+  `type_id` int(3) unsigned NOT NULL AUTO_INCREMENT,
+  `type_name` varchar(180) NOT NULL DEFAULT '',
+  `type_date_added` date NOT NULL DEFAULT '0000-00-00',
+  `type_time_added` time NOT NULL DEFAULT '00:00:00',
+  `type_date_updated` date NOT NULL DEFAULT '0000-00-00',
+  `type_time_updated` time NOT NULL DEFAULT '00:00:00',
+  `type_status` int(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`type_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4;
+) ENGINE=MyISAM AUTO_INCREMENT=308 DEFAULT CHARSET=utf8mb4;
 
-INSERT INTO `tbl_type` (`type_id`, `type_name`) VALUES
-	(1, 'Noodles'),
-	(3, 'Biscuit'),
-	(4, 'Drink'),
-	(5, 'Junk Food'),
-	(6, 'Milk Tea'),
-	(7, 'Vegetable'),
-	(8, 'Fruit'),
-	(9, 'Soy'),
-	(10, 'Vegan');
+-- Dumping data for table db_wbapp.tbl_type: 7 rows
+/*!40000 ALTER TABLE `tbl_type` DISABLE KEYS */;
+INSERT INTO `tbl_type` (`type_id`, `type_name`, `type_date_added`, `type_time_added`, `type_date_updated`, `type_time_updated`, `type_status`) VALUES
+	(301, 'Instant Noodles', '2023-06-04', '14:02:11', '0000-00-00', '00:00:00', 1),
+	(302, 'Canned Goods', '2023-06-04', '14:02:11', '0000-00-00', '00:00:00', 1),
+	(303, 'Frozen Goods', '2023-06-04', '14:02:11', '0000-00-00', '00:00:00', 1),
+	(304, 'Bread and Pastries', '2023-06-04', '14:02:11', '0000-00-00', '00:00:00', 1),
+	(305, 'Dry Goods', '2023-06-05', '01:22:18', '0000-00-00', '00:00:00', 1),
+	(306, 'Hygiene Products', '2023-06-05', '04:41:36', '0000-00-00', '00:00:00', 1),
+	(307, 'Dairy', '2023-06-05', '10:07:23', '0000-00-00', '00:00:00', 1);
+/*!40000 ALTER TABLE `tbl_type` ENABLE KEYS */;
 
-CREATE TABLE IF NOT EXISTS `tbl_user` (
-  `user_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `user_password` varchar(50) NOT NULL,
-  `fname` varchar(50) NOT NULL,
-  `lname` varchar(50) NOT NULL,
-  `contact_no` varchar(50) NOT NULL DEFAULT '0',
-  `position` varchar(50) NOT NULL,
-  `user_email` varchar(50) NOT NULL,
-  `DOB` date NOT NULL,
-  `date_added` date NOT NULL,
-  `time_added` time NOT NULL,
-  `date_updated` date NOT NULL,
-  `time_updated` time NOT NULL,
+-- Dumping structure for table db_wbapp.tbl_users
+CREATE TABLE IF NOT EXISTS `tbl_users` (
+  `user_id` int(8) unsigned NOT NULL AUTO_INCREMENT,
+  `user_lastname` varchar(180) NOT NULL DEFAULT '',
+  `user_firstname` varchar(180) NOT NULL DEFAULT '',
+  `user_email` varchar(180) NOT NULL DEFAULT '',
+  `user_password` varchar(180) NOT NULL DEFAULT '',
+  `user_date_added` date DEFAULT NULL,
+  `user_time_added` time DEFAULT NULL,
+  `user_date_updated` date DEFAULT NULL,
+  `user_time_updated` time DEFAULT NULL,
   `user_status` int(1) NOT NULL DEFAULT 0,
+  `user_token` varchar(255) NOT NULL DEFAULT '',
+  `user_access` varchar(255) NOT NULL DEFAULT '',
+  `contactno` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=27 DEFAULT CHARSET=utf8mb4;
+) ENGINE=MyISAM AUTO_INCREMENT=10000015 DEFAULT CHARSET=utf8mb4;
 
-INSERT INTO `tbl_user` (`user_id`, `user_password`, `fname`, `lname`, `contact_no`, `position`, `user_email`, `DOB`, `date_added`, `time_added`, `date_updated`, `time_updated`, `user_status`) VALUES
-	(1, '1', 'Shannon', 'Po', '09563229521', 'Owner', 'shannon@gmail.com', '2001-08-31', '2023-02-27', '00:23:18', '2023-03-12', '23:38:11', 0),
-	(2, '2', 'Mika', 'Po', '09494721412', 'Manager', 'mika@gmail.com', '2023-03-12', '2023-03-04', '16:23:01', '0000-00-00', '00:00:00', 1),
-	(19, '1', 'Joanne Joyce', 'Po', '09563334567', 'Manager', 'joanne@gmail.com', '2010-01-10', '2023-03-12', '19:08:41', '0000-00-00', '00:00:00', 1),
-	(20, '1', 'Sean', 'Po', '09121221212', 'Manager', 'sean@gmail.com', '2002-09-02', '2023-03-12', '23:02:41', '0000-00-00', '00:00:00', 1),
-	(21, '1', 'Lilia', 'Po', '09559889852', 'Owner', 'lilia@gmail.com', '1947-09-12', '2023-03-12', '23:39:09', '0000-00-00', '00:00:00', 1),
-	(22, '1', 'Trisha', 'Tusil', '09123456789', 'Manager', 'trish@gmail.com', '1999-03-19', '2023-03-12', '23:54:44', '0000-00-00', '00:00:00', 1),
-	(23, '1', 'Venti', 'Genshin', '09123456789', 'Owner', 'venti@gmail.com', '1000-06-16', '2023-03-13', '00:07:11', '0000-00-00', '00:00:00', 1),
-	(24, '1', 'Zhongli', 'Genshin', '09234556789', 'Manager', 'zhongli@gmail.com', '0000-00-00', '2023-03-13', '23:31:10', '0000-00-00', '00:00:00', 1),
-	(25, '1', 'Giannah', 'Trafanco', '09888888888', 'Owner', 'gian@gmail.com', '2002-03-09', '2023-03-14', '14:01:45', '0000-00-00', '00:00:00', 1),
-	(26, '1', 'Venti', 'Genshin Impact', '09563229521', 'Owner', 'ven@gmail.com', '2001-08-31', '2023-03-15', '10:45:50', '0000-00-00', '00:00:00', 1);
+-- Dumping data for table db_wbapp.tbl_users: 6 rows
+/*!40000 ALTER TABLE `tbl_users` DISABLE KEYS */;
+INSERT INTO `tbl_users` (`user_id`, `user_lastname`, `user_firstname`, `user_email`, `user_password`, `user_date_added`, `user_time_added`, `user_date_updated`, `user_time_updated`, `user_status`, `user_token`, `user_access`, `contactno`) VALUES
+	(10000001, 'Po', 'Shan', 'shannon@gmail.com', 'c20ad4d76fe97759aa27a0c99bff6710', '0000-00-00', '00:00:00', '2023-06-05', '01:23:38', 1, '', 'Staff', '09563229521'),
+	(10000013, 'Park', 'Jimin', 'jimin@gmail.com', '5c781fe62a6e25f0466ffd7f6e1ace57', '2023-06-05', '07:25:20', NULL, NULL, 1, '', 'Staff', '09563229521'),
+	(10000014, 'Kim', 'Taehyung', '', '5c781fe62a6e25f0466ffd7f6e1ace57', '2023-06-05', '11:02:43', NULL, NULL, 1, '', 'Owner', '0956 322 9521'),
+	(10000009, 'Lee', 'Zhongli', 'ventigenshinimpact@gmail.com', 'c4ca4238a0b923820dcc509a6f75849b', '2023-06-05', '01:07:52', '2023-06-05', '01:09:10', 1, '', 'Manager', '09562222222'),
+	(10000010, 'Mon', 'Rick', 'mika@gmail.com', 'c81e728d9d4c2f636f067f89cc14862c', '2023-06-05', '04:12:57', NULL, NULL, 1, '', 'Supervisor', '09494124271'),
+	(10000011, 'Choi', 'Soobin', 'shannonalysonpo831@gmail.com', '5c781fe62a6e25f0466ffd7f6e1ace57', '2023-06-05', '04:14:28', '2023-06-05', '04:17:32', 1, '', 'Owner', '09494124271');
+/*!40000 ALTER TABLE `tbl_users` ENABLE KEYS */;
+
+/*!40103 SET TIME_ZONE=IFNULL(@OLD_TIME_ZONE, 'system') */;
+/*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
+/*!40014 SET FOREIGN_KEY_CHECKS=IFNULL(@OLD_FOREIGN_KEY_CHECKS, 1) */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40111 SET SQL_NOTES=IFNULL(@OLD_SQL_NOTES, 1) */;
