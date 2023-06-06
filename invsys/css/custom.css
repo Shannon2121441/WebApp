@@ -1,0 +1,345 @@
+html{ margin: 0; padding: 0;}
+body{
+    font-family: 'Geologica', sans-serif;
+    font-size: 18px;
+    background-image: url(../img/bg.jpg);
+    background-repeat: no-repeat;
+    background-color: #0c6a12;
+}
+#container{
+  height:100vh auto;
+}
+#wrapper{
+    width: 85%;
+    min-height: 600px auto;
+    padding:10px;
+    margin: 0 auto;
+    background-color: #e9ffef92;
+    font-family: 'Geologica', sans-serif;
+    font-size: 18px;
+    border-radius: 25px;
+}
+#header{
+    width: 98%;
+    height: 55px;
+    margin: 0 auto;
+    text-align: center;
+    font-family: 'Rubik', sans-serif;
+    font-size: 50px;
+    color: black;
+    -webkit-text-stroke: 2px rgb(0, 0, 0);
+}
+#menu{
+    height: 24px auto;
+    width: 98%;
+    margin: 0 auto;
+    font-size: 22px;
+}
+#second-submenu{
+    height: 24px;
+    width: 98%;
+    margin: 0 auto;
+    font-size: 22px;
+    text-align: right;
+}
+#third-submenu{
+    height: 24px;
+    width: 98%;
+    text-align: right;
+}
+#menu a:link, #second-submenu a:link, #third-submenu a:link{
+    text-decoration: none;
+    color: #000;
+    font-weight: bold;
+}
+#menu a:visited, #second-submenu a:visited, #third-submenu a:visited{
+  text-decoration: none;
+  color: #000;
+  font-weight: bold;
+}
+#menu a:hover, #second-submenu a:hover, #third-submenu a:hover{
+    text-decoration: none;
+    color: #4CAF50;
+    font-weight: bold;
+}
+#content{
+    width: 96%;
+    padding: 10px;
+    min-height: 600px;
+    height:100vh auto;
+    margin: 10px auto;
+    background-color: #ffffff;
+    border-radius: 25px;
+}
+#subcontent{
+    width: 98%;
+    padding: 4px;
+    height:100vh;
+    margin: 10px auto;
+}
+.move-right{
+    float: right;
+    margin-right: 4px;
+}
+/* FORM */
+.input, select {
+  width: 100%;
+  padding: 12px 20px;
+  margin: 8px 0;
+  display: inline-block;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+input[type=submit] {
+  width: 20%;
+  background-color: #4CAF50;
+  color: white;
+  padding: 14px 20px;
+  margin: 8px 0;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+input[type=submit]:hover {
+  background-color: #23b481;
+}
+textarea {
+  line-height: 1.5;
+  font-family: 'Assistant', sans-serif;
+    font-size: 18px;
+}
+#form-block-center {
+  border-radius: 5px;
+  background-color: #f2f2f2;
+  padding: 20px;
+    width: 80%;
+    margin: 0 auto;
+    height: 600vh auto;
+}
+#form-block {
+  border-radius: 5px;
+  background-color: #f2f2f2;
+  padding: 20px;
+    width: 80%;
+    margin: 0 auto;
+    height: 600vh auto;
+}
+#form-block #form-block-half{
+    width: 45%;
+    float: left;
+    padding: 20px;
+    height: 600vh auto;
+}
+#button-block{
+    width: 95%;
+    padding: 20px;
+    text-align: right;
+}
+/** end */
+
+#data-list {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+#data-list td, #data-list th {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+
+#data-list tr:nth-child(even){background-color: #f2f2f2;}
+
+#data-list tr:hover {background-color: #ddd;}
+
+#data-list th {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  text-align: left;
+  background-color: #14cc8b;
+  color: white;
+}
+#login-block{
+  width: 30%;
+  height: 300px;
+  margin: 0 auto;
+  border-radius: 5px;
+  background-color: #f2f2f2;
+  padding: 20px;
+  text-align: center;
+  font-family: 'Rubik', sans-serif;
+  color: black;
+}
+#brand-block{
+  width: 40%;
+  height: 100px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+/* The Modal (background) */
+.modal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  padding-top: 100px; /* Location of the box */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+/* Modal Content */
+#error_notif {
+  background-color: #fefefe;
+  margin: auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 40%;
+  margin: 0 auto;
+  z-index: 999999999;
+}
+
+* {box-sizing: border-box}
+
+/* Set a style for all buttons */
+button {
+  background-color: #04AA6D;
+  color: white;
+  padding: 14px 20px;
+  margin: 8px 0;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+  opacity: 0.9;
+}
+
+button:hover {
+  opacity:1;
+}
+
+/* Float cancel and delete buttons and add an equal width */
+.cancelbtn, .confirmbtn, .submitbtn  {
+  float: right;
+  width: 30%;
+}
+
+/* Add a color to the cancel button */
+.cancelbtn {
+  background-color: #ccc;
+  color: black;
+}
+
+/* Add a color to the delete button */
+.confirmbtn {
+  background-color: #f44336;
+}
+.btn-jsactive{
+  text-decoration: underline;
+  color: #000;
+  font-weight: bold;
+  cursor: pointer;
+}
+/* Add a color to the delete button */
+.submitbtn {
+  background-color: #04AA6D;
+}
+
+/* Add padding and center-align text to the container */
+.container {
+  padding: 16px;
+  text-align: left;
+}
+
+/* The Modal (background) */
+.modal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgba(255,255,255,70%);
+  padding-top: 50px;
+}
+
+/* Modal Content/Box */
+.modal-content {
+  background-color: #fefefe;
+  margin: 5% auto 15% auto; /* 5% from the top, 15% from the bottom and centered */
+  border: 4px solid #888;
+  width: 40%; /* Could be more or less, depending on screen size */
+}
+
+/* Style the horizontal ruler */
+hr {
+  border: 1px solid #f1f1f1;
+  margin-bottom: 25px;
+}
+
+/* The Modal Close Button (x) */
+.close {
+  position: absolute;
+  right: 35px;
+  top: 15px;
+  font-size: 40px;
+  font-weight: bold;
+  color: #f1f1f1;
+}
+
+.close:hover,
+.close:focus {
+  color: #f44336;
+  cursor: pointer;
+}
+
+/* Clear floats */
+.clearfix::after {
+  content: "";
+  clear: both;
+  display: table;
+}
+
+/* Change styles for cancel button and delete button on extra small screens */
+@media screen and (max-width: 300px) {
+  .cancelbtn, .confirmbtn, .submitbtn {
+    width: 100%;
+  }
+}
+.btn-box{
+  float: right;
+  width: 50%;
+  text-align: right;
+}
+
+#receive-details table {
+  border-collapse: collapse;
+  border-spacing: 0;
+  width: 90%;
+  margin: 0 auto;
+  border: 1px solid #000;
+}
+.info-text{
+  font-weight: bold;
+}
+img{
+  border: 1px solid #000;
+  padding: 4px;
+}
+/*tr:nth-child(even){background-color: #f2f2f2}*/
+.tmbnail{
+  border: 1px solid #000;
+  border-radius: 4px;
+  padding: 5px;
+  width: 60px;
+}
+.tmbnail:hover {
+  transform: scale(1.5); /* (150% zoom - Note: if the zoom is too large, it will go outside of the viewport) */
+}
