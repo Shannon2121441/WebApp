@@ -21,23 +21,23 @@ switch($action){
     case 'updateemail':
         change_user_email();
 	break;
-    case 'updatecontactno':
-        change_user_contactno();
+    case 'updatecontact':
+        change_contactno();
 	break;
 }
 
 function create_new_user(){
 	$user = new User();
-    $email = $_POST['user_email'];
-    $lname = ucwords($_POST['lname']);
-    $fname = ucwords($_POST['fname']);
-    $position = ucwords($_POST['position']);
-    $contact_no = ucwords($_POST['contact_no']);
-    $DOB = ucwords($_POST['DOB']);
+    $email = $_POST['email'];
+    $contactno = $_POST['contactno'];
+    $lastname = ucwords($_POST['lastname']);
+    $firstname = ucwords($_POST['firstname']);
+    $access = ucwords($_POST['access']);
     $password = $_POST['password'];
     $confirmpassword = $_POST['confirmpassword'];
-    
-    $result = $user->new_user($email,$password,$lname,$fname,$position,$contact_no,$DOB);
+    $password = md5($password);
+
+    $result = $user->new_user($email,$password,$lastname,$firstname,$access,$contactno);
     if($result){
         $id = $user->get_user_id($email);
         header('location: ../index.php?page=settings&subpage=users&action=profile&id='.$id);
@@ -47,12 +47,13 @@ function create_new_user(){
 function update_user(){
 	$user = new User();
     $user_id = $_POST['userid'];
-    $lname = ucwords($_POST['lname']);
-    $fname = ucwords($_POST['fname']);
-    $position = ucwords($_POST['position']);
+    $lastname = ucwords($_POST['lastname']);
+    $firstname = ucwords($_POST['firstname']);
+    $access = ucwords($_POST['access']);
+    $contactno = ucwords($_POST['contactno']);
    
     
-    $result = $user->update_user($lname,$fname,$position,$user_id);
+    $result = $user->update_user($lastname,$firstname,$access,$user_id,$contactno);
     if($result){
         header('location: ../index.php?page=settings&subpage=users&action=profile&id='.$user_id);
     }
@@ -72,7 +73,7 @@ function change_user_password(){
 	$user = new User();
     $id = $_POST['userid'];
     $current_password = $_POST['crpassword'];
-    $new_password = $_POST['npassword'];
+    $new_password = md5($_POST['npassword']);
     $confirm_password = $_POST['copassword'];
     $result = $user->change_password($id,$new_password);
     if($result){
@@ -91,12 +92,13 @@ function change_user_email(){
         header('location: ../index.php?page=settings&subpage=users&action=profile&id='.$id);
     }
 }
-function change_user_contactno(){
-    $user = new User();
+
+function change_contactno(){
+	$user = new User();
     $id = $_POST['userid'];
     $current_contactno = $_POST['contactno'];
     $new_contactno = $_POST['newcontactno'];
-    $current_contactno = $_POST['crcontactno'];
+    $current_password = $_POST['crpassword'];
     $result = $user->change_contactno($id,$new_contactno);
     if($result){
         header('location: ../index.php?page=settings&subpage=users&action=profile&id='.$id);

@@ -1,6 +1,3 @@
-<div id="second-nav">
-    Search <input type="text"/>
-</div>
 <div id="subcontent">
     <?php
       switch($action){
@@ -12,4 +9,4 @@
                 break; 
             }
     ?>
-</div>
+  </div>

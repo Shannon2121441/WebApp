@@ -1,12 +1,23 @@
+<?php
+ if($user_access_level == 'Staff' && $user_id_login != $id){
+    header("location: index.php?page=settings&subpage=products");
+ }
+?>
 <h3>Provide the Required Information</h3>
 <div id="form-block">
     <form method="POST" action="processes/process.product.php?action=newproduct">
         <div id="form-block-center">
-            <label for="prod_name">Product Name</label>
-            <input type="text" id="prod_name" class="input" name="prod_name" placeholder="Product Name">
+            <label for="fname">Product Name</label>
+            <input type="text" id="pname" class="input" required name="pname" placeholder="Product name..">
 
-            <label for="type_id">Type</label>
-            <select id="type_id" name="type_id">
+            <label for="lname">Description</label>
+            <textarea id="desc" class="input" required name="desc" placeholder="Description.."></textarea>
+            
+            <label for="fname">Product Retail Price</label>
+            <input type="text" id="price" class="input" required name="price" placeholder="Product price..">
+
+            <label for="ptype">Type</label>
+            <select id="ptype" name="ptype">
               <?php
               if($product->list_types() != false){
                 foreach($product->list_types() as $value){
@@ -17,31 +28,10 @@
                 }
               }
               ?>
-            </select>
-
-            <label for="supplier_id">Supplier</label>
-            <select id="supplier_id" name="supplier_id">
-              <?php
-              if($product->list_suppliers() != false){
-                foreach($product->list_suppliers() as $value){
-                   extract($value);
-              ?>
-              <option value="<?php echo $supplier_id;?>"><?php echo $supplier_name;?></option>
-              <?php
-                }
-              }
-              ?>
-            </select>
-
-            <label for="beg_inv">Beginning Inventory</label>
-            <input type="number" class="input" name="beg_inv" placeholder="Beginning Inventory">
-            
-            <label for="prod_price">Product Retail Price</label>
-            <input type="text" id="prod_price" class="input" name="prod_price" placeholder="Product Price">
-
-        </div>
+        </select>
+              </div>
         <div id="button-block">
-          <input type="submit" value="Save">
+        <input type="submit" value="Save">
         </div>
   </form>
 </div>
